@@ -20,24 +20,30 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <TextBlock Text="Parent Program:" Grid.Column="0" Grid.Row="0" Padding="10" FontSize="14"/>
-            <TextBlock Text="{Binding ParentProcessName}"  Grid.Column="1" Grid.Row="0" Padding="10" FontSize="14"/>
+            <TextBlock Text="Caller:" Grid.Column="0" Grid.Row="0" Padding="10" FontSize="14"/>
+            <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
+                <Image Source="{Binding ParentProcessIcon}" Width="16" Height="16"/>
+                <TextBlock Text="{Binding ParentProcessName}"   Padding="5 10" FontSize="14"/>
+            </StackPanel>
             <TextBlock Text="Website:" Grid.Column="0" Grid.Row="1" Padding="10" FontSize="14"/>
+            
             <TextBlock Text="{Binding SiteName}"  Grid.Column="1" Grid.Row="1" Padding="10" FontSize="14"/>
+            
         </Grid>
         <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
             <ItemsControl ItemsSource="{Binding Browsers}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Border Padding="5">
-                        <Grid Height="64" >
+                            <Grid Height="64" >
                                 <Button Grid.Column="1" Click="Button_Click" HorizontalContentAlignment="Left">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="64"/>
                                             <ColumnDefinition/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="1" Text="{Binding Name}" TextAlignment="Left" HorizontalAlignment="Left"/>
+                                        <Image Source="{Binding Icon}" Width="32" Height="32"/>
+                                        <TextBlock Grid.Column="1" Text="{Binding Name}" TextAlignment="Left" HorizontalAlignment="Left" VerticalAlignment="Center"/>
                                     </Grid>
                                 </Button>
                             </Grid>

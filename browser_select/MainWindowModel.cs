@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace browser_select
 {
@@ -26,6 +27,19 @@ namespace browser_select
                 OnPropertyChanged("ParentProcessName");
             }
         }
+        ImageSource _parentProcessIcon;
+        public ImageSource ParentProcessIcon
+        {
+            get
+            {
+                return _parentProcessIcon;
+            }
+            set
+            {
+                _parentProcessIcon = value;
+                OnPropertyChanged("ParentProcessIcon");
+            }
+        }
         private string _siteName;
         public string SiteName
         {
@@ -37,6 +51,7 @@ namespace browser_select
             }
         }
 
+       
         private void OnPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
@@ -52,6 +67,7 @@ namespace browser_select
     {
         public string Name { get; set; }
         public string Executable { get; set; }
+        public ImageSource Icon { get; set; }
 
         public static string GetBrowserGoodName(string browser)
         {

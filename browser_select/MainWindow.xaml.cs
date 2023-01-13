@@ -27,20 +27,36 @@ namespace browser_select
             InitializeComponent();
             this.DataContext = new MainWindowModel();
             Model.ParentProcessName = ParentProcess.FileName;
+            var iconReader = new IconReader(ParentProcess.FullPath);
+            Model.ParentProcessIcon = iconReader.GetIconBitmapImage(0);
             Model.SiteName = GetSiteName();
+           
             Model.Browsers = new ObservableCollection<Browser>();
             foreach (var browser in Browser.GetBrowsers())
             {
                 if (browser == "browser_select") continue;
                 var browserName = Browser.GetBrowserGoodName(browser);
                 var executable = Browser.GetBrowserExecutable(browser);
+                ImageSource icon = null;
+                try
+                {
+                    var exec = executable.Replace("\"", "");
+                    var iconR = new IconReader(exec);
+                    icon = iconR.GetIconBitmapImage(0);
+                }
+                catch (Exception ex)
+                {
+                }
                 if (!string.IsNullOrEmpty(browserName) && !string.IsNullOrEmpty(executable))
                 {
-                    Model.Browsers.Add(new Browser() { Name = browserName, Executable = executable });
+                    var browserItem = new Browser() { Name = browserName, Executable = executable };
+                    if (icon != null)
+                    {
+                        browserItem.Icon = icon;
+                    }
+                    Model.Browsers.Add(browserItem);
                 }
             }
-            //Model.Browsers.Add(new Browser() { Name = "Google Chrome", Executable = Browser.GetBrowserExecutable("Google Chrome") });
-            //Model.Browsers.Add(new Browser() { Name = "Microsoft Edge", Executable = Browser.GetBrowserExecutable("Microsoft Edge") });
         }
 
         public MainWindowModel Model
