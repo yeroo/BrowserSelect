@@ -20,84 +20,20 @@ namespace browser_select
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow 
     {
         public MainWindow()
         {
             InitializeComponent();
-            this.DataContext = new MainWindowModel();
-            Model.ParentProcessName = ParentProcess.FileName;
-            var iconReader = new IconReader(ParentProcess.FullPath);
-            Model.ParentProcessIcon = iconReader.GetIconBitmapImage(0);
-            Model.SiteName = GetSiteName();
+            Loaded += (sender, args) =>
+            {
+                Wpf.Ui.Appearance.Watcher.Watch(
+                    this,                                  // Window class
+                    Wpf.Ui.Appearance.BackgroundType.Mica, // Background type
+                    true                                   // Whether to change accents automatically
+                );
+            };
            
-            Model.Browsers = new ObservableCollection<Browser>();
-            foreach (var browser in Browser.GetBrowsers())
-            {
-                if (browser == "browser_select") continue;
-                var browserName = Browser.GetBrowserGoodName(browser);
-                var executable = Browser.GetBrowserExecutable(browser);
-                ImageSource icon = null;
-                try
-                {
-                    var exec = executable.Replace("\"", "");
-                    var iconR = new IconReader(exec);
-                    icon = iconR.GetIconBitmapImage(0);
-                }
-                catch (Exception ex)
-                {
-                }
-                if (!string.IsNullOrEmpty(browserName) && !string.IsNullOrEmpty(executable))
-                {
-                    var browserItem = new Browser() { Name = browserName, Executable = executable };
-                    if (icon != null)
-                    {
-                        browserItem.Icon = icon;
-                    }
-                    Model.Browsers.Add(browserItem);
-                }
-            }
-        }
-
-        public MainWindowModel Model
-        {
-            get
-            {
-                return (MainWindowModel)DataContext;
-            }
-        }
-
-        private string GetSiteName()
-        {
-            var retVal = string.Empty;
-            var args = Environment.GetCommandLineArgs();
-            if (args.Length > 1)
-            {
-                var url = args[1];
-                // get host name from url
-                var uriAddress = new Uri(url);
-                retVal = uriAddress.Host;
-
-            }
-            return retVal;
-        }
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            var button = sender as Button;
-            if (button == null) return;
-            var browser = button.DataContext as Browser;
-            if (browser == null) return;
-            var args = Environment.GetCommandLineArgs();
-            if (args.Length > 1)
-            {
-                var url = args[1];
-                Process.Start(browser.Executable, url);
-            }
-            else
-            {
-                Process.Start(browser.Executable);
-            }
-            this.Close();
         }
     }
 }

@@ -8,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace browser_select
+namespace browser_select.Models
 {
-    public class MainWindowModel : INotifyPropertyChanged
+    public class BrowsersModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -51,7 +51,7 @@ namespace browser_select
             }
         }
 
-       
+
         private void OnPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
@@ -62,7 +62,6 @@ namespace browser_select
 
         public ObservableCollection<Browser> Browsers { get; set; }
     }
-
     public class Browser
     {
         public string Name { get; set; }
@@ -71,7 +70,7 @@ namespace browser_select
 
         public static string GetBrowserGoodName(string browser)
         {
-            return _GetBrowserRegistryValue(browser, "Capabilities","ApplicationName");
+            return _GetBrowserRegistryValue(browser, "Capabilities", "ApplicationName");
         }
         private static string _GetBrowserRegistryValue(string browser, string keyName, string valueName)
         {
