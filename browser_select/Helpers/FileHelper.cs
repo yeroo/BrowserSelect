@@ -24,7 +24,7 @@ namespace browser_select.Helpers
             {
                 Directory.CreateDirectory(settingsFileDirectory);
             }
-            var json = JsonConvert.SerializeObject(settings);
+            var json = JsonConvert.SerializeObject(settings, Formatting.Indented);
             File.WriteAllText(settingsFileName, json);
         }
 

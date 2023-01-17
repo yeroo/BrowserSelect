@@ -1,5 +1,7 @@
-﻿using System;
+﻿using browser_select.Helpers;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +25,13 @@ namespace browser_select.Pages
         public Settings()
         {
             InitializeComponent();
+            DataContext = new Models.SettingsModel();
+           
+        }
+
+        private void EditButton_Click(object sender, RoutedEventArgs e)
+        {
+            Process.Start("notepad.exe", FileHelper.GetSettingsFileName());
         }
     }
 }

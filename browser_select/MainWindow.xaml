@@ -36,7 +36,7 @@
                 <ui:NavigationStore.Items>
                     <ui:NavigationItem
                     Icon="Globe24"
-                    Content="Choose Browser"
+                    Content="Browsers"
                     PageType="{x:Type pages:Browsers}"
                     PageTag="browsers" />
                 </ui:NavigationStore.Items>

@@ -11,7 +11,14 @@ namespace browser_select.Models
 {
     public class SettingsModel : INotifyPropertyChanged
     {
+        
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public SettingsModel()
+        {
+            var settingsFile = Helpers.FileHelper.GetSettingsFile();
+            LoadSettings(settingsFile);
+        }
         private string _jsonAutoAppsAndSites;
         public string JsonAutoAppsAndSites
         {
@@ -24,7 +31,7 @@ namespace browser_select.Models
         }
         public void LoadSettings(SettingsFile settings)
         {
-            JsonAutoAppsAndSites = JsonConvert.SerializeObject(settings.AutoAppsAndSites);
+            JsonAutoAppsAndSites = JsonConvert.SerializeObject(settings.AutoAppsAndSites, Formatting.Indented);
         }
 
         public (SettingsFile, bool) StoreSettings()
