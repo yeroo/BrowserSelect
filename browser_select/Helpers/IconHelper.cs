@@ -1,4 +1,4 @@
-﻿namespace browser_select
+﻿namespace browser_select.Helpers
 {
     using System;
     using System.Collections.Generic;
@@ -8,12 +8,13 @@
     using System.Windows.Media.Imaging;
     using System.Security;
     using System.Text;
-    internal class IconReader
+
+    internal class IconHelper
     {
         private const uint LOAD_LIBRARY_AS_DATAFILE = 0x00000002;
         private readonly static IntPtr RT_ICON = (IntPtr)3;
         private readonly static IntPtr RT_GROUP_ICON = (IntPtr)14;
-    
+
         private byte[][]? iconData = null;   // Binary data of each icon.
 
         public int Count
@@ -35,7 +36,7 @@
         /// Initializes a new instance of the IconExtractor class from the specified file name.
         /// </summary>
         /// <param name="fileName">The file to extract icons from.</param>
-        public IconReader(string fileName)
+        public IconHelper(string fileName)
         {
             Initialize(fileName);
         }

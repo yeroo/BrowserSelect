@@ -1,11 +1,15 @@
-﻿using Microsoft.Win32;
+﻿using browser_select.Helpers;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
 
 namespace browser_select.Models
@@ -27,8 +31,8 @@ namespace browser_select.Models
                 OnPropertyChanged("ParentProcessName");
             }
         }
-        ImageSource _parentProcessIcon;
-        public ImageSource ParentProcessIcon
+        ImageSource? _parentProcessIcon;
+        public ImageSource? ParentProcessIcon
         {
             get
             {
@@ -59,67 +63,147 @@ namespace browser_select.Models
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
+        private SaveOption _saveOption;
 
-        public ObservableCollection<Browser> Browsers { get; set; }
-    }
-    public class Browser
-    {
-        public string Name { get; set; }
-        public string Executable { get; set; }
-        public ImageSource Icon { get; set; }
-
-        public static string GetBrowserGoodName(string browser)
+        public SaveOption SaveOption
         {
-            return _GetBrowserRegistryValue(browser, "Capabilities", "ApplicationName");
-        }
-        private static string _GetBrowserRegistryValue(string browser, string keyName, string valueName)
-        {
-            var retVal = string.Empty;
-            var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Clients\StartMenuInternet\" + browser + @"\" + keyName);
-            if (key != null)
+            get => _saveOption;
+            set
             {
-                retVal = key.GetValue(valueName).ToString();
+                _saveOption = value;
+                OnPropertyChanged("SaveOption");
+            }
+        }
+
+        private bool _isSaveOptionEnabled;
+        public bool IsSaveOptionEnabled
+        {
+            get => _isSaveOptionEnabled;
+            set
+            {
+                _isSaveOptionEnabled = value;
+                OnPropertyChanged("IsSaveOptionEnabled");
+            }
+        }
+
+        public IEnumerable<KeyValuePair<string, string>> SaveOptionList
+        {
+            get
+            {
+                return Helpers.EnumHelper.GetAllValuesAndDescriptions<SaveOption>();
+            }
+        }
+        public static BrowsersModel Create()
+        {
+            var model = new Models.BrowsersModel();
+            model.ParentProcessName = CallerHelper.FileName;
+            var iconHelperCaller = new IconHelper(CallerHelper.FullPath);
+            model.ParentProcessIcon = iconHelperCaller.GetIconBitmapImage(0);
+            model.SiteName = RegestryHelper.GetSiteName();
+            model.Browsers = new ObservableCollection<Browser>();
+            foreach (var browser in BrowserHelper.GetBrowsers())
+            {
+                if (browser == "browser_select") continue;
+                var browserName = BrowserHelper.GetBrowserGoodName(browser);
+                var executable = BrowserHelper.GetBrowserExecutable(browser);
+                ImageSource icon = null;
+                try
+                {
+                    var exec = executable.Replace("\"", "");
+                    var iconHelper = new Helpers.IconHelper(exec);
+                    icon = iconHelper.GetIconBitmapImage(0);
+                }
+                catch (Exception ex)
+                {
+                }
+                if (!string.IsNullOrEmpty(browserName) && !string.IsNullOrEmpty(executable))
+                {
+                    var browserItem = new Browser() { Name = browserName, Executable = executable };
+                    if (icon != null)
+                    {
+                        browserItem.Icon = icon;
+                    }
+                    model.Browsers.Add(browserItem);
+                }
+            }
+            return model;
+        }
+        public void LaunchBrowser(Browser browser)
+        {
+            var args = Environment.GetCommandLineArgs();
+
+            if (IsSaveOptionEnabled == true && !(string.IsNullOrEmpty(SiteName) && SaveOption == SaveOption.Site))
+            {
+                //load settings
+                var settingsFile = FileHelper.GetSettingsFile();
+                if (settingsFile == null)
+                {
+                    settingsFile = new SettingsFile();
+                }
+                if (settingsFile.AutoAppsAndSites == null)
+                {
+                    settingsFile.AutoAppsAndSites = new Dictionary<string, Dictionary<string, List<string>>>();
+                }
+                string site = string.Empty;
+                string caller = string.Empty;
+
+                switch (SaveOption)
+                {
+                    case SaveOption.Caller:
+                        site = "*";
+                        caller = ParentProcessName;
+                        break;
+                    case SaveOption.Site:
+                        site = SiteName;
+                        caller = "*";
+                        break;
+                    case SaveOption.Both:
+                        site = SiteName;
+                        caller = ParentProcessName;
+                        break;
+                    default:
+                        break;
+                }
+                Dictionary<string, List<string>>? browserSetting = null;
+                if (settingsFile.AutoAppsAndSites.TryGetValue(browser.Name, out browserSetting) == false)
+                {
+                    browserSetting = new Dictionary<string, List<string>>();
+                }
+                List<string>? sites = null;
+                if (browserSetting.TryGetValue(caller, out sites) == false)
+                {
+                    sites = new List<string>();
+                }
+                if (sites.Contains(site) == false && sites.Contains("*") == false)
+                {
+                    sites.Add(site);
+                }
+                browserSetting[caller] = sites;
+                settingsFile.AutoAppsAndSites[browser.Name] = browserSetting;
+                FileHelper.SaveSettingsFile(settingsFile);
+            }
+
+            if (args.Length > 1)
+            {
+                var url = args[1];
+                Process.Start(browser.Executable, url);
             }
             else
             {
-                key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Clients\StartMenuInternet\" + browser + @"\" + keyName);
-                if (key != null)
-                {
-                    retVal = key.GetValue(valueName).ToString();
-                }
+                Process.Start(browser.Executable);
             }
-            return retVal;
+            Application.Current.Shutdown();
         }
-        public static string GetBrowserExecutable(string browser)
-        {
-            return _GetBrowserRegistryValue(browser, @"shell\open\command", "");
-        }
-        public static List<string> GetBrowsers()
-        {
-            var browsers = new List<string>();
-            var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Clients\StartMenuInternet");
-            if (key != null)
-            {
-                foreach (var subKeyName in key.GetSubKeyNames())
-                {
-                    if (!browsers.Contains(subKeyName))
-                    {
-                        browsers.Add(subKeyName);
-                    }
-                }
-            }
-            key = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\Clients\StartMenuInternet");
-            if (key != null)
-            {
-                foreach (var subKeyName in key.GetSubKeyNames())
-                {
-                    if (!browsers.Contains(subKeyName))
-                    {
-                        browsers.Add(subKeyName);
-                    }
-                }
-            }
-            return browsers;
-        }
+        public ObservableCollection<Browser> Browsers { get; set; }
     }
+    public enum SaveOption
+    {
+        [Description("Always open for this caller")]
+        Caller,
+        [Description("Always open for this site")]
+        Site,
+        [Description("Always open for this caller and site")]
+        Both
+    }
+   
 }

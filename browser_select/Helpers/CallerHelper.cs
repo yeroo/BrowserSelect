@@ -4,11 +4,11 @@ using System.Diagnostics;
 using System.Text;
 using System.Runtime.InteropServices;
 
-namespace browser_select
+namespace browser_select.Helpers
 {
-    public class ParentProcess
+    public class CallerHelper
     {
-        public static String ProcessName
+        public static string ProcessName
         {
             get { return GetParentProcess().ProcessName; }
         }
@@ -18,7 +18,7 @@ namespace browser_select
             get { return GetParentProcess().Id; }
         }
 
-        public static String FullPath
+        public static string FullPath
         {
             get
             {
@@ -26,7 +26,7 @@ namespace browser_select
             }
         }
 
-        public static String FileName
+        public static string FileName
         {
             get
             {
@@ -34,7 +34,7 @@ namespace browser_select
             }
         }
 
-        public static String DirectoryName
+        public static string DirectoryName
         {
             get
             {
@@ -55,7 +55,7 @@ namespace browser_select
             PROCESSENTRY32 oProcInfo = new PROCESSENTRY32();
 
             oProcInfo.dwSize =
-            (uint)System.Runtime.InteropServices.Marshal.SizeOf(typeof(PROCESSENTRY32));
+            (uint)Marshal.SizeOf(typeof(PROCESSENTRY32));
 
             if (Process32First(oHnd, ref oProcInfo) == false)
                 return null;

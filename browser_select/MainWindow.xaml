@@ -40,13 +40,13 @@
                     PageType="{x:Type pages:Browsers}"
                     PageTag="browsers" />
                 </ui:NavigationStore.Items>
-                <!--<ui:NavigationStore.Footer>
+                <ui:NavigationStore.Footer>
                     <ui:NavigationItem 
                     Content="Settings"
                     Icon="Diversity24"
                     PageType="{x:Type pages:Settings}"
                     PageTag="settings" />
-                </ui:NavigationStore.Footer>-->
+                </ui:NavigationStore.Footer>
             </ui:NavigationStore>
             <!--  We display our pages inside this element.  -->
             <Border
