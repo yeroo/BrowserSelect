@@ -69,7 +69,7 @@
                 </Grid>
             </Border>
         </Grid>
-        <ui:TitleBar Title="Browsers" Grid.Row="0">
+        <ui:TitleBar Title="Browsers" Grid.Row="0" Icon="app.png">
             <!--<ui:TitleBar.Tray>
                 <ui:NotifyIcon FocusOnLeftClick="True" MenuOnRightClick="True" TooltipText="Browser Select">
                     <ui:NotifyIcon.Menu>

@@ -32,6 +32,8 @@ namespace browser_select
                     Wpf.Ui.Appearance.BackgroundType.Mica, // Background type
                     true                                   // Whether to change accents automatically
                 );
+
+
             };
            
         }

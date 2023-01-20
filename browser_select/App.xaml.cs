@@ -9,6 +9,7 @@ using System.Linq;
 using System.Security.Policy;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Media3D;
 
 namespace browser_select
 {
@@ -75,8 +76,15 @@ namespace browser_select
                 Application.Current.Shutdown();
             }
             else
-            {
-                MainWindow mainView = new MainWindow();
+            {                // set height in code
+                // base height with one item is 406, each additional item is 77
+                var browserCount = BrowserHelper.GetBrowsers().Count;
+                var additionalItems = browserCount > 4 ? 3 : browserCount - 1;
+                var height = 408 + additionalItems * 78;
+                MainWindow mainView = new MainWindow()
+                {
+                    Height= height
+                };
                 mainView.Show();
             }
         }
