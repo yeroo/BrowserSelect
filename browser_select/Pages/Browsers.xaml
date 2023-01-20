@@ -15,7 +15,7 @@
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Grid>
+        <Grid Margin="15 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition/>
@@ -24,16 +24,16 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <TextBlock Text="Caller:" Grid.Column="0" Grid.Row="0" Padding="10" FontSize="14"/>
+            <TextBlock Text="Caller:" Grid.Column="0" Grid.Row="0" Padding="0 10" FontSize="14"/>
             <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal">
                 <Image Source="{Binding ParentProcessIcon}" Width="16" Height="16"/>
-                <TextBlock Text="{Binding ParentProcessName}"   Padding="5 10" FontSize="14"/>
+                <TextBlock Text="{Binding ParentProcessName}"   Padding="0 10" FontSize="14"/>
             </StackPanel>
-            <TextBlock Text="Website:" Grid.Column="0" Grid.Row="1" Padding="10" FontSize="14"/>
-            <TextBlock Text="{Binding SiteName}"  Grid.Column="1" Grid.Row="1" Padding="10" FontSize="14"/>
+            <TextBlock Text="Website:" Grid.Column="0" Grid.Row="1" Padding="0 10" FontSize="14"/>
+            <TextBlock Text="{Binding SiteName}"  Grid.Column="1" Grid.Row="1" Padding="0 10" FontSize="14"/>
         </Grid>
 
-        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Auto" Margin="15">
             <ListBox ItemsSource="{Binding Browsers}" SelectionChanged="ListBox_SelectionChanged">
                 <ListBox.Resources>
                     <Style TargetType="ListBoxItem">
@@ -67,8 +67,8 @@
                 <RowDefinition/>
                 <RowDefinition/>
             </Grid.RowDefinitions>
-            <CheckBox IsChecked="{Binding IsSaveOptionEnabled}">Do not ask next time</CheckBox>
-            <ComboBox Grid.Row="1" ItemsSource="{Binding SaveOptionList}" SelectedValue="{Binding SaveOption}" SelectedValuePath="Key">
+            <CheckBox IsChecked="{Binding IsSaveOptionEnabled}" Margin="15 0">Do not ask next time</CheckBox>
+            <ComboBox Grid.Row="1" ItemsSource="{Binding SaveOptionList}" SelectedValue="{Binding SaveOption}" SelectedValuePath="Key" Margin="15">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Value}" />

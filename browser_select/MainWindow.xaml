@@ -12,7 +12,7 @@
         WindowBackdropType="Mica"
         WindowCornerPreference="Round"
         mc:Ignorable="d"
-        Title="Browsers" Height="600" Width="400" 
+        Title="Browsers" Height="640" Width="350" 
         WindowStartupLocation="CenterScreen">
 
     <Grid>
