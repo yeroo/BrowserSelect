@@ -7,7 +7,7 @@ string applicationClasses = "browser_selectHTML";
 string applicationPath = $@"SOFTWARE\Clients\StartMenuInternet\{application}";
 string applicationCapabilityPath = $"{applicationPath}\\Capabilities";
 
-string appplicationExecutablePath = @"C:\Users\bkudryashov\Source\repos\browser_select\browser_select\bin\Debug\net6.0-windows\browser_select.exe";
+string appplicationExecutablePath = @"C:\Users\bkudryashov\Source\GitHub\browser_select\browser_select\bin\Debug\net6.0-windows\browser_select.exe";
 
 // SOFTWARE\RegisteredApplications
 var registeredApplicationsMenuKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\RegisteredApplications", true);
