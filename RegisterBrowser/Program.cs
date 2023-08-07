@@ -10,7 +10,7 @@ string applicationCapabilityPath = $"{applicationPath}\\Capabilities";
 string appplicationExecutablePath = @"C:\Users\bkudryashov\Source\GitHub\browser_select\browser_select\bin\Debug\net6.0-windows\browser_select.exe";
 
 // SOFTWARE\RegisteredApplications
-var registeredApplicationsMenuKey = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\RegisteredApplications", true);
+var registeredApplicationsMenuKey = Registry.CurrentUser.OpenSubKey(@"SOFTWARE\RegisteredApplications", true);
 if (args.Length == 1 && args[0] == "unregister")
 {
     if (registeredApplicationsMenuKey.GetValue(application) != null)
