@@ -10,19 +10,37 @@ namespace browser_select.Helpers
     {
         public static string ProcessName
         {
-            get { return GetParentProcess().ProcessName; }
+            get
+            {
+                var parentProcess = GetParentProcess();
+                if (parentProcess != null)
+                    return parentProcess.ProcessName;
+                else
+                    return string.Empty;
+            }
         }
 
         public static int ProcessId
         {
-            get { return GetParentProcess().Id; }
+            get
+            {
+                var parentProcess = GetParentProcess();
+                if (parentProcess != null)
+                    return parentProcess.Id;
+                else
+                    return -1;
+            }
         }
 
         public static string FullPath
         {
             get
             {
-                return GetParentProcess().MainModule.FileName;
+                var parentProcess = GetParentProcess();
+                if (parentProcess != null)
+                    return parentProcess.MainModule.FileName;
+                else
+                    return string.Empty;
             }
         }
 
@@ -30,7 +48,11 @@ namespace browser_select.Helpers
         {
             get
             {
-                return System.IO.Path.GetFileName(GetParentProcess().MainModule.FileName);
+                var parentProcess = GetParentProcess();
+                if (parentProcess != null)
+                    return System.IO.Path.GetFileName(parentProcess.MainModule.FileName);
+                else
+                    return string.Empty;
             }
         }
 
@@ -38,39 +60,51 @@ namespace browser_select.Helpers
         {
             get
             {
-                return System.IO.Path.GetDirectoryName(GetParentProcess().MainModule.FileName);
+                var parentProcess = GetParentProcess();
+                if (parentProcess != null)
+                    return System.IO.Path.GetDirectoryName(parentProcess.MainModule.FileName);
+                else
+                    return string.Empty;
+
             }
         }
 
         private static Process GetParentProcess()
         {
-            int iParentPid = 0;
-            int iCurrentPid = Process.GetCurrentProcess().Id;
-
-            IntPtr oHnd = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-
-            if (oHnd == IntPtr.Zero)
-                return null;
-
-            PROCESSENTRY32 oProcInfo = new PROCESSENTRY32();
-
-            oProcInfo.dwSize =
-            (uint)Marshal.SizeOf(typeof(PROCESSENTRY32));
-
-            if (Process32First(oHnd, ref oProcInfo) == false)
-                return null;
-
-            do
+            try
             {
-                if (iCurrentPid == oProcInfo.th32ProcessID)
-                    iParentPid = (int)oProcInfo.th32ParentProcessID;
-            }
-            while (iParentPid == 0 && Process32Next(oHnd, ref oProcInfo));
+                int iParentPid = 0;
+                int iCurrentPid = Process.GetCurrentProcess().Id;
 
-            if (iParentPid > 0)
-                return Process.GetProcessById(iParentPid);
-            else
+                IntPtr oHnd = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+
+                if (oHnd == IntPtr.Zero)
+                    return null;
+
+                PROCESSENTRY32 oProcInfo = new PROCESSENTRY32();
+
+                oProcInfo.dwSize =
+                (uint)Marshal.SizeOf(typeof(PROCESSENTRY32));
+
+                if (Process32First(oHnd, ref oProcInfo) == false)
+                    return null;
+
+                do
+                {
+                    if (iCurrentPid == oProcInfo.th32ProcessID)
+                        iParentPid = (int)oProcInfo.th32ParentProcessID;
+                }
+                while (iParentPid == 0 && Process32Next(oHnd, ref oProcInfo));
+
+                if (iParentPid > 0)
+                    return Process.GetProcessById(iParentPid);
+                else
+                    return null;
+            }
+            catch (Exception)
+            {
                 return null;
+            }
         }
 
         static uint TH32CS_SNAPPROCESS = 2;

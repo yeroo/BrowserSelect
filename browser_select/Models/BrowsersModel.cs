@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -97,8 +98,12 @@ namespace browser_select.Models
         {
             var model = new Models.BrowsersModel();
             model.ParentProcessName = CallerHelper.FileName;
-            var iconHelperCaller = new IconHelper(CallerHelper.FullPath);
-            model.ParentProcessIcon = iconHelperCaller.GetIconBitmapImage(0);
+            var fullPath = CallerHelper.FullPath;
+            if (!string.IsNullOrEmpty(fullPath))
+            {
+                var iconHelperCaller = new IconHelper(fullPath);
+                model.ParentProcessIcon = iconHelperCaller.GetIconBitmapImage(0);
+            }
             model.SiteName = RegestryHelper.GetSiteName();
             model.Browsers = new ObservableCollection<Browser>();
             foreach (var browser in BrowserHelper.GetBrowsers())
@@ -205,5 +210,5 @@ namespace browser_select.Models
         [Description("Always open for this caller and site")]
         Both
     }
-   
+
 }
